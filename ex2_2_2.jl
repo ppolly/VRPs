@@ -1,7 +1,5 @@
-using JuMP, Cbc
-#using JuMP, Gurobi #if Gurobi is to be used.
-m = Model(solver=CbcSolver())
-#m = Model(solver=GurobiSolver()) if GurobiSolver is to be used.
+using JuMP, AmplNLWriter
+m = Model(solver=BonminNLSolver())
 
 ## matrix of travel times between node i and j. node 1 = depot
 t =[0 2 10 2;
@@ -14,13 +12,13 @@ C= 10 #vehicle capacity
 
 n = 4 # number of node, including depot
 d= [0 2 4 4] #demand at each node
-K=2
+
 
 @variable(m, x[1:n,1:n], Bin) # binary
 @variable(m, a[2:n] >=0) #variable, arrival time
 @variable(m, u[2:n] >=0) #variable, flow after node i is visited
 
-@objective(m, Min, sum{t[i,j]*x[i,j], i=1:n, j=1:n}) #objective is to minimize the total travel time
+@NLobjective(m, Min, sum{a[i]*u[i], i=2:n}) #nonlinear objective function
 
 # constraint 2.12
 for j = 2:n
@@ -33,10 +31,10 @@ for i = 2:n
 end
 
 # constraint 2.14
-  @constraint(m, sum{x[i,1], i=2:n} ==K )
+  @constraint(m, sum{x[i,1], i=2:n} ==1 )
 
 # constraint 2.15
-  @constraint(m, sum{x[1,j], j=2:n} ==K )
+  @constraint(m, sum{x[1,j], j=2:n} ==1 )
 
 # constraint 2.16
   for i = 2:n
@@ -64,10 +62,15 @@ for i = 2:n
   end
 end
 
-# constraint 2.19
+#constraint 2.19
 for i = 2:n
    @constraint(m, t[1,i] - a[i]  <= 0 )
 end
+
+
+
+#   @constraint(m, x[1,1] == 0 )
+
 
 print(m) 
 status = solve(m)
