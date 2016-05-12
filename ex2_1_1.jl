@@ -4,10 +4,10 @@ m = Model(solver=CbcSolver())
 #m = Model(solver=GurobiSolver()) if GurobiSolver is to be used.
 
 ## matrix of travel times between node i and j. node 1 = depot
-t =[ 0 2 10 2;
-     2 0  8 4;
-    10 8  0 8;
-     2 4  8 0]
+t =[ 0 2 10 2 ;
+     2 0  8 4 ;
+    10 8  0 8 ;
+     2 4  8 0 ]
 
 T = 100 #upper limit of the vehicle travel time
 C = 10 #vehicle capacity
