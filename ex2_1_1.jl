@@ -1,7 +1,7 @@
-using JuMP, Cbc
+using JuMP, Gurobi
 #using JuMP, Gurobi #if Gurobi is to be used.
-m = Model(solver=CbcSolver())
-#m = Model(solver=GurobiSolver()) if GurobiSolver is to be used.
+m = Model(Gurobi.Optimizer)
+
 
 ## matrix of travel times between node i and j. node 1 = depot
 t =[ 0 2 10 2 ;
